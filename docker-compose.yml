@@ -1,0 +1,37 @@
+services:
+  web:
+    image: flask-crud:${VERSION:-latest}
+    container_name: flask_app
+    restart: always
+    expose:
+      - "5000"
+    depends_on:
+      - db
+    environment:
+      - MYSQL_HOST=$${MYSQL_HOST}
+      - MYSQL_USER=$${MYSQL_USER}
+      - MYSQL_PASSWORD=$${MYSQL_PASSWORD}
+      - MYSQL_DB=$${MYSQL_DB}
+      - MYSQL_PORT=$${MYSQL_PORT}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.flask-crud.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.flask-crud.entrypoints=websecure"
+      - "traefik.http.routers.flask-crud.tls.certresolver=letsencrypt"
+      - "traefik.http.services.flask-crud.loadbalancer.server.port=5000"
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    expose:
+      - "3306"
+
+volumes:
+  db_data:
