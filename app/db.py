@@ -3,7 +3,7 @@ from flask_mysqldb import MySQL
 from dotenv import load_dotenv
 import os
 
-load_dotenv()  # take environment variables from .env.
+load_dotenv()
 
 # Mysql Settings
 app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
