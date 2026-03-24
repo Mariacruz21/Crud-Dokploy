@@ -1,6 +1,8 @@
+version: '3.8'
+
 services:
   web:
-    image: flask-crud:${VERSION:-latest}
+    build: .
     container_name: flask_app
     restart: always
     expose:
@@ -8,11 +10,11 @@ services:
     depends_on:
       - db
     environment:
-      - MYSQL_HOST=$${MYSQL_HOST}
-      - MYSQL_USER=$${MYSQL_USER}
-      - MYSQL_PASSWORD=$${MYSQL_PASSWORD}
-      - MYSQL_DB=$${MYSQL_DB}
-      - MYSQL_PORT=$${MYSQL_PORT}
+      - MYSQL_HOST=db
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DB=${MYSQL_DB}
+      - MYSQL_PORT=${MYSQL_PORT}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.flask-crud.rule=Host(`${DOMAIN}`)"
